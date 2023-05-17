@@ -11,16 +11,15 @@
 
 declare(strict_types=1);
 
-namespace Quant\Core\Tests\Attribute;
+namespace Quant\Core\Tests\Benchmarks\Resources\Attributed;
 
-use PHPUnit\Framework\TestCase;
-use Quant\Core\Attribute\Accessor;
+use Quant\Core\Attribute\Getter;
 use Quant\Core\Attribute\Setter;
 
-class SetterTest extends TestCase
+/**
+ *
+ */
+class C extends B
 {
-    public function testSetter(): void
-    {
-        $this->assertInstanceOf(Accessor::class, new Setter());
-    }
+    #[Getter] #[Setter] protected string $cPublic = "";
 }
