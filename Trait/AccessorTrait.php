@@ -40,7 +40,6 @@ trait AccessorTrait
      */
     private ?array $getterCache = null;
 
-
     /**
      * @param string $method
      * @param array<int, mixed> $args
@@ -52,12 +51,12 @@ trait AccessorTrait
      */
     public function __call($method, $args): mixed
     {
-        $isGetter = $isBooleanGetter = false;
+        $isSetter = $isBooleanGetter = false;
 
         if (
-            ($isSetter        = str_starts_with($method, self::SET)) ||
             ($isGetter        = str_starts_with($method, self::GET)) ||
-            ($isBooleanGetter = str_starts_with($method, self::IS))
+            ($isBooleanGetter = str_starts_with($method, self::IS))  ||
+            ($isSetter        = str_starts_with($method, self::SET))
         ) {
             $property = lcfirst(substr($method, ($isSetter || $isGetter) ? 3 : 2));
 
@@ -68,14 +67,16 @@ trait AccessorTrait
                 }
             } else {
                 if (($propertyCfg = $this->isCallable($isBooleanGetter ? self::IS : self::GET, $property))) {
-                    /**
-                     * @var string $decl
-                     */
-                    $decl =  $propertyCfg["decl"];
-                    $fn = \Closure::bind(fn ($property) => $this->{$property}, $this, $decl);
-                    return $fn($property);
+                    if ($propertyCfg["modifier"] === ReflectionProperty::IS_PRIVATE) {
+                        /**
+                         * @var string $decl
+                         */
+                        $decl =  $propertyCfg["decl"];
+                        $fn = \Closure::bind(fn ($property) => $this->{$property}, $this, $decl);
+                        return $fn($property);
+                    }
 
-                   // return $propertyCfg["property"]->getValue($this);
+                    return $this->{$property};
                 }
             }
         }
@@ -112,27 +113,23 @@ trait AccessorTrait
             return false;
         }
 
-        $argCfg = $propertyCfg["args"];
-        if (!empty($argCfg) && in_array($argCfg[0], [Modifier::PROTECTED, Modifier::PRIVATE])) {
-            $accessLevel = $propertyCfg["args"][0];
+        $accessLevel = $propertyCfg["accessorModifier"];
 
+        /* @phpstan-ignore-next-line */
+        if ($accessLevel === Modifier::PROTECTED || $accessLevel === Modifier::PRIVATE) {
             $bt = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
 
             if (
                 /* @phpstan-ignore-next-line */
                 $accessLevel === Modifier::PROTECTED &&
-                /* @phpstan-ignore-next-line */
-                $bt[2]["class"] !== get_class($this) &&
-                /* @phpstan-ignore-next-line */
-                !is_subclass_of($this, $bt[2]["class"], true)
+                ($this instanceof $propertyCfg["decl"]) &&
+                !is_a($bt[2]["class"], $propertyCfg["decl"], true)
             ) {
                 return false;
             }
             if (
                 /* @phpstan-ignore-next-line */
-                $accessLevel === Modifier::PRIVATE &&
-                /* @phpstan-ignore-next-line */
-                $bt[2]["class"] !== $propertyCfg["decl"]
+                $accessLevel === Modifier::PRIVATE && $bt[2]["class"] !== $propertyCfg["decl"]
             ) {
                 return false;
             }
@@ -161,15 +158,19 @@ trait AccessorTrait
         if (method_exists($this, $applier) && is_callable($applier)) {
             $newValue = $this->{$applier}($value);
         } elseif (method_exists($declaringClass, $applier)) {
-            // if the apoplier was not found, it is possible that it was declared
-            // as private in the property declaring class
+            // if the applier was not found, it is possible that it was declared
+            // as private in the property's declaring class
             $fn = \Closure::bind(fn ($value) => $this->{$applier}($value), $this, $declaringClass);
             $newValue = $fn($newValue);
         }
 
-        // $propertyCfg["property"]->setValue($this, $newValue);
-        $fn = \Closure::bind(fn ($newValue) => $this->{$property} = $newValue, $this, $declaringClass);
-        $fn($newValue);
+        if ($propertyCfg["modifier"] === ReflectionProperty::IS_PRIVATE) {
+            // $propertyCfg["property"]->setValue($this, $newValue);
+            $fn = \Closure::bind(fn ($newValue) => $this->{$property} = $newValue, $this, $declaringClass);
+            $fn($newValue);
+        } else {
+            $this->{$property} = $newValue;
+        }
     }
 
 
@@ -196,7 +197,7 @@ trait AccessorTrait
      */
     private function hasSetterAttribute(string $propertyName): array|false
     {
-        if (!$this->setterCache) {
+        if ($this->setterCache === null) {
             $this->setterCache = $this->cachePropertiesWithAccessorAttribute(Setter::class);
         }
 
@@ -210,7 +211,7 @@ trait AccessorTrait
      */
     private function hasGetterAttribute(string $propertyName): array|false
     {
-        if (!$this->getterCache) {
+        if ($this->getterCache === null) {
             $this->getterCache = $this->cachePropertiesWithAccessorAttribute(Getter::class);
         }
 
@@ -223,10 +224,6 @@ trait AccessorTrait
      */
     private function cachePropertiesWithAccessorAttribute(string $accessorClass): array
     {
-        if (!in_array($accessorClass, [Setter::class, Getter::class])) {
-            throw new ValueError("accessorClass must be one of " . Setter::class . " or " . Getter::class);
-        }
-
         $propBag = [];
 
         $reflectionClass = new ReflectionClass($this);
@@ -237,7 +234,7 @@ trait AccessorTrait
         foreach ($properties as $property) {
             $propertyName = $property->getName();
 
-            if (in_array($propertyName, ["getterCache", "setterCache"])) {
+            if ($propertyName === "getterCache" || $propertyName === "setterCache") {
                 continue;
             }
 
@@ -249,10 +246,12 @@ trait AccessorTrait
 
             if (!empty($accessorAttribute) && ($property instanceof ReflectionProperty)) {
                 $propBag[$propertyName] = [
-                    "args" => $accessorAttribute[0]->getArguments() ?: [],
+                    "accessorModifier" => $accessorAttribute[0]->getArguments()
+                        ? $accessorAttribute[0]->getArguments()[0] : Modifier::PUBLIC,
                     /*__toString vs getName */
                     /* @phpstan-ignore-next-line */
                     "type" => $property->getType()?->getName(),
+                    "modifier" => $property->getModifiers(),
                     "decl" => $property->getDeclaringClass()->getName()
                 ];
             }
@@ -298,11 +297,8 @@ trait AccessorTrait
         }
 
         $constructor = $reflectionClass->getConstructor();
-        $parameters = [];
-        if ($constructor) {
-            $parameters = $constructor->getParameters();
-        }
 
-        return $parameters;
+        /* @phpstan-ignore-next-line */
+        return $reflectionClass->getConstructor() ? $constructor->getParameters() : [];
     }
 }
