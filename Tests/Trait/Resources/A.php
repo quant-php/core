@@ -49,7 +49,6 @@ class A
     #[Setter] #[Getter]
     private string $publicGuard = "";
 
-    /* @phpstan-ignore-next-line */
     private string $snafu;
     public function __construct(
         #[Setter] #[Getter]

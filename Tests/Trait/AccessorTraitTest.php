@@ -103,6 +103,8 @@ class AccessorTraitTest extends TestCase
     {
         $this->expectException(BadMethodCallException::class);
         $inst = $this->createA();
+
+        /* @phpstan-ignore-next-line */
         $inst->setProtectedVar("foo");
     }
 
