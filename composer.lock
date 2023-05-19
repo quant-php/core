@@ -647,12 +647,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpstan.git",
-                "reference": "ec9bf5a7318a5d9023f44b61bfc0271fe0467ca2"
+                "reference": "d37a195b840a5b7308bbcccffe4cc5911c165788"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/ec9bf5a7318a5d9023f44b61bfc0271fe0467ca2",
-                "reference": "ec9bf5a7318a5d9023f44b61bfc0271fe0467ca2",
+                "url": "https://api.github.com/repos/phpstan/phpstan/zipball/d37a195b840a5b7308bbcccffe4cc5911c165788",
+                "reference": "d37a195b840a5b7308bbcccffe4cc5911c165788",
                 "shasum": ""
             },
             "require": {
@@ -702,7 +702,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-05-17T14:16:06+00:00"
+            "time": "2023-05-19T14:22:00+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -1038,12 +1038,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit.git",
-                "reference": "f100f0c168df5c34ea3d71de47eb6f812efa521b"
+                "reference": "1313279ada1c2d2e663394625f8117970ad6c16a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/f100f0c168df5c34ea3d71de47eb6f812efa521b",
-                "reference": "f100f0c168df5c34ea3d71de47eb6f812efa521b",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit/zipball/1313279ada1c2d2e663394625f8117970ad6c16a",
+                "reference": "1313279ada1c2d2e663394625f8117970ad6c16a",
                 "shasum": ""
             },
             "require": {
@@ -1132,7 +1132,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-05-16T14:07:34+00:00"
+            "time": "2023-05-19T08:05:35+00:00"
         },
         {
             "name": "psr/cache",
@@ -1298,12 +1298,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/quant-php/phpstan.git",
-                "reference": "aac02c61990f8a6b6d4d252bbf3f7291c2cfe652"
+                "reference": "c3f7f5546a1d2e4ebe6d95a4425190cb2fb05a20"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/quant-php/phpstan/zipball/aac02c61990f8a6b6d4d252bbf3f7291c2cfe652",
-                "reference": "aac02c61990f8a6b6d4d252bbf3f7291c2cfe652",
+                "url": "https://api.github.com/repos/quant-php/phpstan/zipball/c3f7f5546a1d2e4ebe6d95a4425190cb2fb05a20",
+                "reference": "c3f7f5546a1d2e4ebe6d95a4425190cb2fb05a20",
                 "shasum": ""
             },
             "require": {
@@ -1355,7 +1355,7 @@
                 "issues": "https://github.com/quant-php/phpstan/issues",
                 "source": "https://github.com/quant-php/phpstan/tree/main"
             },
-            "time": "2023-05-18T21:47:22+00:00"
+            "time": "2023-05-19T15:46:47+00:00"
         },
         {
             "name": "sebastian/cli-parser",
@@ -2423,12 +2423,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "ce1cfc744b890cb2e658702770565c9c2a8abc4c"
+                "reference": "2211316d39bf8791a39e7d2a52c5893a4072c8c9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/ce1cfc744b890cb2e658702770565c9c2a8abc4c",
-                "reference": "ce1cfc744b890cb2e658702770565c9c2a8abc4c",
+                "url": "https://api.github.com/repos/symfony/console/zipball/2211316d39bf8791a39e7d2a52c5893a4072c8c9",
+                "reference": "2211316d39bf8791a39e7d2a52c5893a4072c8c9",
                 "shasum": ""
             },
             "require": {
@@ -2505,7 +2505,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-05-15T08:49:32+00:00"
+            "time": "2023-05-19T12:46:45+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -3109,12 +3109,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/process.git",
-                "reference": "89ac295dc344cc0cd802dd303cb2598e184e7014"
+                "reference": "8741e3ed7fe2e91ec099e02446fb86667a0f1628"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/process/zipball/89ac295dc344cc0cd802dd303cb2598e184e7014",
-                "reference": "89ac295dc344cc0cd802dd303cb2598e184e7014",
+                "url": "https://api.github.com/repos/symfony/process/zipball/8741e3ed7fe2e91ec099e02446fb86667a0f1628",
+                "reference": "8741e3ed7fe2e91ec099e02446fb86667a0f1628",
                 "shasum": ""
             },
             "require": {
@@ -3162,7 +3162,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2023-04-28T15:57:00+00:00"
+            "time": "2023-05-19T08:06:44+00:00"
         },
         {
             "name": "symfony/service-contracts",
